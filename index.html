@@ -686,21 +686,11 @@ async function salvarProduto() {
 
 async function enviarParaSheets(produto) {
   const payload = { nome: produto.nome, preco: produto.preco, detalhes: produto.detalhes, data: produto.data, foto: produto.foto || '' };
-  const form = document.createElement('form');
-  form.method = 'POST'; form.action = SCRIPT_URL; form.target = '_iframe_sink';
-  const input = document.createElement('input');
-  input.type = 'hidden'; input.name = 'payload'; input.value = JSON.stringify(payload);
-  form.appendChild(input); document.body.appendChild(form);
-  return new Promise(resolve => {
-    let iframe = document.getElementById('_iframe_sink');
-    if (!iframe) {
-      iframe = document.createElement('iframe');
-      iframe.name = '_iframe_sink'; iframe.id = '_iframe_sink';
-      iframe.style.display = 'none'; document.body.appendChild(iframe);
-    }
-    const timeout = setTimeout(resolve, 4000);
-    iframe.onload = () => { clearTimeout(timeout); resolve(); };
-    form.submit(); document.body.removeChild(form);
+  await fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'payload=' + encodeURIComponent(JSON.stringify(payload))
   });
 }
 
