@@ -231,6 +231,8 @@ textarea { resize: none; line-height: 1.6; }
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCnAffXMT4SbK8xnv5MaXYOG4kt6S76-zO1yaRyVKUgN6HXCBEpdtWomVxT1E2lSp3/exec';
+
 const firebaseConfig = {
   apiKey: "AIzaSyDE7MsNhMp0odOirjeeq99nkONUdYvYSHo",
   authDomain: "lala-e-ivan.firebaseapp.com",
@@ -311,6 +313,7 @@ window.salvarProduto = async function() {
       data: new Date().toLocaleDateString('pt-BR'),
       publicacao: { ml: false, shopee: false, social: false }
     });
+    enviarParaSheets({ nome, preco: preco ? parseFloat(preco).toFixed(2) : '', detalhes, foto: currentPhoto || '', data: new Date().toLocaleDateString('pt-BR') });
     showToast('Produto salvo ✓');
     limparForm();
   } catch(e) {
@@ -369,6 +372,21 @@ window.copiarCampo = function(btn, valor) {
     fallbackCopy(valor, done);
   }
 };
+
+function enviarParaSheets(data) {
+  const form = document.createElement('form');
+  form.method = 'POST'; form.action = SCRIPT_URL; form.target = '_iframe_sink';
+  const input = document.createElement('input');
+  input.type = 'hidden'; input.name = 'payload'; input.value = JSON.stringify(data);
+  form.appendChild(input); document.body.appendChild(form);
+  let iframe = document.getElementById('_iframe_sink');
+  if (!iframe) {
+    iframe = document.createElement('iframe');
+    iframe.name = '_iframe_sink'; iframe.id = '_iframe_sink';
+    iframe.style.display = 'none'; document.body.appendChild(iframe);
+  }
+  form.submit(); document.body.removeChild(form);
+}
 
 function fallbackCopy(valor, cb) {
   const ta = document.createElement('textarea');
