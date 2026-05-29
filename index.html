@@ -4,16 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Cadastro de Produtos</title>
-<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #f5f5f7;
   --white: #ffffff;
-  --surface: #ffffff;
   --border: rgba(0,0,0,0.08);
   --border2: rgba(0,0,0,0.12);
   --accent: #0071e3;
-  --accent-hover: #0077ed;
   --text: #1d1d1f;
   --text2: #3a3a3c;
   --muted: #86868b;
@@ -21,626 +19,130 @@
   --danger: #ff3b30;
   --radius: 18px;
   --radius-sm: 12px;
-  --radius-xs: 8px;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 60px; }
 
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  padding-bottom: 60px;
-}
-
-/* HEADER */
 header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(245,245,247,0.85);
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(245,245,247,0.9);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid var(--border);
-  padding: 0 20px;
-  height: 64px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  padding: 0 20px; height: 64px;
+  display: flex; flex-direction: row; align-items: center; justify-content: space-between;
 }
+.header-center-title { font-size: 10px; font-weight: 500; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; position: absolute; left: 50%; transform: translateX(-50%); }
+.header-logo-wrap { display: flex; align-items: center; line-height: 1; }
+.header-logo-wrap svg { display: block; overflow: visible; }
 
-.header-center-title {
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--muted);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  line-height: 1;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
+.sync-indicator { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+.sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #c7c7cc; transition: background 0.3s; }
+.sync-dot.online { background: var(--success); animation: pulse-dot 2.5s ease-in-out infinite; }
+.sync-dot.syncing { background: var(--accent); animation: spin-dot 1s linear infinite; }
+@keyframes pulse-dot { 0%,100%{box-shadow:0 0 0 0 rgba(52,199,89,0.4);}50%{box-shadow:0 0 0 4px rgba(52,199,89,0);} }
+@keyframes spin-dot { to{transform:rotate(360deg);} }
 
-.header-logo-wrap {
-  display: flex;
-  align-items: center;
-  line-height: 1;
-}
-
-.header-logo-wrap svg {
-  display: block;
-  overflow: visible;
-}
-
-/* TABS */
 .tabs-wrap {
-  position: sticky;
-  top: 64px;
-  z-index: 99;
-  background: rgba(245,245,247,0.85);
+  position: sticky; top: 64px; z-index: 99;
+  background: rgba(245,245,247,0.9);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid var(--border);
-  padding: 10px 20px;
+  padding: 10px 16px;
 }
+.tabs { display: flex; background: rgba(0,0,0,0.06); border-radius: 10px; padding: 3px; gap: 2px; }
+.tab { flex: 1; padding: 8px 6px; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; border: none; border-radius: 8px; background: transparent; transition: all 0.2s; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 5px; }
+.tab.active { background: var(--white); color: var(--text); font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+.count-badge { background: var(--accent); color: #fff; width: 18px; height: 18px; border-radius: 50%; font-size: 10px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; }
 
-.tabs {
-  display: flex;
-  background: rgba(0,0,0,0.06);
-  border-radius: 10px;
-  padding: 3px;
-  gap: 2px;
-}
+.section { padding: 16px; }
+.form-card { background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 
-.tab {
-  flex: 1;
-  padding: 8px 8px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--muted);
-  cursor: pointer;
-  border: none;
-  border-radius: 8px;
-  background: transparent;
-  transition: all 0.2s;
-  font-family: inherit;
-  letter-spacing: -0.2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
-
-.tab.active {
-  background: var(--white);
-  color: var(--text);
-  font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.06);
-}
-
-.count-badge {
-  background: var(--accent);
-  color: #fff;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  font-size: 11px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* SECTION */
-.section { padding: 20px 16px; }
-
-/* FORM CARD */
-.form-card {
-  background: var(--white);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
-}
-
-/* PHOTO UPLOAD */
-.photo-upload {
-  width: 100%;
-  aspect-ratio: 4/3;
-  background: #f5f5f7;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: background 0.2s;
-  border-bottom: 1px solid var(--border);
-}
-
+.photo-upload { width: 100%; aspect-ratio: 4/3; background: #f5f5f7; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; transition: background 0.2s; border-bottom: 1px solid var(--border); }
 .photo-upload:active { background: #ebebed; }
-
-.photo-upload img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.photo-upload .overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
+.photo-upload img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.photo-upload .overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
 .photo-upload:active .overlay { opacity: 1; }
-
-.overlay-text {
-  background: rgba(255,255,255,0.95);
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 500;
-  padding: 10px 20px;
-  border-radius: 20px;
-}
-
-.photo-icon-wrap {
-  width: 64px;
-  height: 64px;
-  background: rgba(0,113,227,0.08);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 14px;
-  transition: transform 0.2s;
-}
-
-.photo-upload:active .photo-icon-wrap { transform: scale(0.94); }
+.overlay-text { background: rgba(255,255,255,0.95); color: var(--text); font-size: 14px; font-weight: 500; padding: 10px 20px; border-radius: 20px; }
+.photo-icon-wrap { width: 64px; height: 64px; background: rgba(0,113,227,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
 .photo-icon { font-size: 26px; }
-
-.photo-label {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text2);
-  margin-bottom: 4px;
-}
-
-.photo-sublabel {
-  font-size: 13px;
-  color: var(--muted);
-}
-
+.photo-label { font-size: 15px; font-weight: 500; color: var(--text2); margin-bottom: 4px; }
+.photo-sublabel { font-size: 13px; color: var(--muted); }
 input[type="file"] { display: none; }
 
-/* FIELDS */
 .fields-wrap { padding: 20px; }
 .field-group { margin-bottom: 16px; }
-.field-group:last-of-type { margin-bottom: 0; }
-
-label.field-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--muted);
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-input[type="text"],
-input[type="number"],
-textarea {
-  width: 100%;
-  background: var(--bg);
-  border: 1.5px solid transparent;
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  font-size: 16px;
-  padding: 13px 15px;
-  outline: none;
-  transition: all 0.2s;
-  font-family: inherit;
-  -webkit-appearance: none;
-  font-weight: 400;
-  letter-spacing: -0.2px;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus,
-textarea:focus {
-  border-color: var(--accent);
-  background: #fff;
-  box-shadow: 0 0 0 4px rgba(0,113,227,0.1);
-}
-
-input::placeholder, textarea::placeholder {
-  color: #c7c7cc;
-  font-weight: 400;
-}
-
+label.field-label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: 0.3px; text-transform: uppercase; margin-bottom: 8px; }
+input[type="text"], input[type="number"], textarea { width: 100%; background: var(--bg); border: 1.5px solid transparent; border-radius: var(--radius-sm); color: var(--text); font-size: 16px; padding: 13px 15px; outline: none; transition: all 0.2s; font-family: inherit; -webkit-appearance: none; }
+input[type="text"]:focus, input[type="number"]:focus, textarea:focus { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 4px rgba(0,113,227,0.1); }
+input::placeholder, textarea::placeholder { color: #c7c7cc; }
 textarea { resize: none; line-height: 1.6; }
-
 .price-wrap { position: relative; }
-.price-prefix {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--muted);
-}
+.price-prefix { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-size: 16px; font-weight: 500; color: var(--muted); }
 .price-wrap input { padding-left: 36px; }
 
-/* BUTTONS */
 .buttons-wrap { padding: 0 20px 20px; }
-
-.btn-primary {
-  width: 100%;
-  padding: 16px;
-  background: var(--accent);
-  border: none;
-  border-radius: var(--radius-sm);
-  color: #fff;
-  font-size: 17px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
-  font-family: inherit;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  letter-spacing: -0.3px;
-}
-
+.btn-primary { width: 100%; padding: 16px; background: var(--accent); border: none; border-radius: var(--radius-sm); color: #fff; font-size: 17px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .btn-primary:active { background: #0062c3; transform: scale(0.98); }
 .btn-primary:disabled { background: #aeaeb2; cursor: not-allowed; transform: none; }
-
-.btn-secondary {
-  width: 100%;
-  padding: 14px;
-  background: transparent;
-  border: none;
-  border-radius: var(--radius-sm);
-  color: var(--accent);
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  margin-top: 4px;
-  transition: all 0.15s;
-  font-family: inherit;
-}
-
+.btn-secondary { width: 100%; padding: 14px; background: transparent; border: none; border-radius: var(--radius-sm); color: var(--accent); font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 4px; transition: all 0.15s; font-family: inherit; }
 .btn-secondary:active { background: rgba(0,113,227,0.06); }
-
-/* SPINNER */
-.spinner {
-  width: 18px; height: 18px;
-  border: 2px solid rgba(255,255,255,0.4);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
+.spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* TOAST */
-.toast {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%) translateY(120px);
-  background: rgba(29,29,31,0.92);
-  backdrop-filter: blur(20px);
-  color: #fff;
-  padding: 13px 22px;
-  border-radius: 14px;
-  font-size: 14px;
-  font-weight: 500;
-  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-  z-index: 999;
-  white-space: nowrap;
-  max-width: 90vw;
-  text-align: center;
-  letter-spacing: -0.2px;
-}
-
+.toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(120px); background: rgba(29,29,31,0.92); backdrop-filter: blur(20px); color: #fff; padding: 13px 22px; border-radius: 14px; font-size: 14px; font-weight: 500; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); z-index: 999; white-space: nowrap; max-width: 90vw; text-align: center; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 .toast.error { background: rgba(255,59,48,0.92); }
 
-/* SHEET BAR */
-.sheet-bar {
-  background: var(--white);
-  border-radius: var(--radius);
-  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
-  padding: 14px 18px;
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.sheet-bar-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.sheet-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--success);
-  animation: pulse-green 2.5s ease-in-out infinite;
-}
-
-@keyframes pulse-green {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(52,199,89,0.4); }
-  50% { box-shadow: 0 0 0 5px rgba(52,199,89,0); }
-}
-
-.sheet-name {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
-  letter-spacing: -0.2px;
-}
-
-.sheet-bar-right a {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--accent);
-  text-decoration: none;
-}
-
-/* PRODUCT CARDS */
 .produtos-list { display: flex; flex-direction: column; gap: 10px; }
-
-.produto-card {
-  background: var(--white);
-  border-radius: var(--radius);
-  overflow: hidden;
-  display: flex;
-  align-items: stretch;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-  animation: card-in 0.35s cubic-bezier(0.34,1.2,0.64,1) both;
-}
-
-@keyframes card-in {
-  from { opacity: 0; transform: translateY(12px) scale(0.97); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.produto-foto {
-  width: 90px;
-  min-width: 90px;
-  background: var(--bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  color: #c7c7cc;
-}
-
+.produto-card { background: var(--white); border-radius: var(--radius); overflow: hidden; display: flex; align-items: stretch; box-shadow: 0 2px 12px rgba(0,0,0,0.05); animation: card-in 0.35s cubic-bezier(0.34,1.2,0.64,1) both; }
+@keyframes card-in { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.produto-foto { width: 90px; min-width: 90px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 28px; color: #c7c7cc; }
 .produto-foto img { width: 100%; height: 100%; object-fit: cover; }
-
-.produto-info { padding: 14px 14px; flex: 1; min-width: 0; }
-
-.produto-num {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--accent);
-  margin-bottom: 4px;
-  letter-spacing: 0.2px;
-}
-
-.produto-nome {
-  font-size: 15px;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-bottom: 4px;
-  color: var(--text);
-  letter-spacing: -0.3px;
-}
-
-.produto-preco {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--success);
-  margin-bottom: 4px;
-  letter-spacing: -0.3px;
-}
-
-.produto-detalhe {
-  font-size: 12px;
-  color: var(--muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  line-height: 1.5;
-}
-
+.produto-info { padding: 14px; flex: 1; min-width: 0; }
+.produto-num { font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+.produto-nome { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+.produto-preco { font-size: 15px; font-weight: 600; color: var(--success); margin-bottom: 4px; }
+.produto-detalhe { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.5; }
 .produto-actions { display: flex; align-items: center; padding: 0 14px; }
-
-.btn-delete {
-  width: 30px; height: 30px;
-  background: rgba(0,0,0,0.05);
-  border: none;
-  border-radius: 50%;
-  color: var(--muted);
-  font-size: 13px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s;
-}
-
+.btn-delete { width: 30px; height: 30px; background: rgba(0,0,0,0.05); border: none; border-radius: 50%; color: var(--muted); font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
 .btn-delete:active { background: rgba(255,59,48,0.12); color: var(--danger); }
 
-/* EMPTY STATE */
-.empty-state { text-align: center; padding: 70px 30px; }
+.controle-list { display: flex; flex-direction: column; gap: 10px; }
+.controle-card { background: var(--white); border-radius: var(--radius); box-shadow: 0 2px 12px rgba(0,0,0,0.05); overflow: hidden; animation: card-in 0.35s cubic-bezier(0.34,1.2,0.64,1) both; }
+.controle-top { display: flex; align-items: center; gap: 12px; padding: 14px 16px 10px; }
+.controle-foto { width: 44px; height: 44px; min-width: 44px; border-radius: 10px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 20px; overflow: hidden; }
+.controle-foto img { width: 100%; height: 100%; object-fit: cover; }
+.controle-nome { font-size: 14px; font-weight: 600; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.controle-preco { font-size: 13px; font-weight: 600; color: var(--success); white-space: nowrap; }
 
-.empty-icon {
-  font-size: 52px;
-  margin-bottom: 16px;
-  display: block;
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-.empty-text {
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 6px;
-  letter-spacing: -0.3px;
-}
-
-.empty-sub {
-  font-size: 14px;
-  color: var(--muted);
-  line-height: 1.6;
-}
-
-/* CONTROLE TAB */
-.controle-list { display: flex; flex-direction: column; gap: 14px; }
-
-.controle-card {
-  background: var(--white);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-  animation: card-in 0.35s cubic-bezier(0.34,1.2,0.64,1) both;
-}
-
-.controle-card-header {
-  padding: 12px 16px 10px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.controle-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.controle-card-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.1px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 70%;
-}
-
-.controle-card-date {
-  font-size: 11px;
-  color: var(--muted);
-  font-weight: 500;
-  flex-shrink: 0;
-}
-
-.controle-card-pills {
-  display: flex;
-  gap: 6px;
-}
-
-.status-pill {
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  border: 1.5px solid var(--border2);
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.2s;
-  letter-spacing: -0.1px;
-}
-
-.status-pill:active { transform: scale(0.95); }
-
-.status-pill.done {
-  background: rgba(52,199,89,0.1);
-  border-color: var(--success);
-  color: var(--success);
-}
-
-.controle-field {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-  gap: 10px;
-}
-
-.controle-field:last-child { border-bottom: none; }
-
-.controle-field-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  min-width: 62px;
-  flex-shrink: 0;
-}
-
-.controle-field-value {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
-  flex: 1;
-  word-break: break-word;
-  line-height: 1.4;
-  letter-spacing: -0.2px;
-}
-
+.controle-fields { border-top: 1px solid var(--border); }
+.controle-field { display: flex; align-items: center; padding: 11px 16px; border-bottom: 1px solid var(--border); gap: 10px; }
+.controle-field-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; min-width: 62px; flex-shrink: 0; }
+.controle-field-value { font-size: 14px; font-weight: 500; color: var(--text); flex: 1; word-break: break-word; line-height: 1.4; }
 .controle-field-value.preco { color: var(--success); font-weight: 600; }
-
-.btn-copy {
-  flex-shrink: 0;
-  height: 30px;
-  padding: 0 12px;
-  background: rgba(0,113,227,0.08);
-  border: none;
-  border-radius: 8px;
-  color: var(--accent);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.15s;
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-}
-
+.btn-copy { flex-shrink: 0; height: 28px; padding: 0 11px; background: rgba(0,113,227,0.08); border: none; border-radius: 8px; color: var(--accent); font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s; white-space: nowrap; }
 .btn-copy:active { background: rgba(0,113,227,0.18); transform: scale(0.95); }
 .btn-copy.copied { background: rgba(52,199,89,0.12); color: var(--success); }
+
+.controle-canais { display: flex; border-top: 1px solid var(--border); }
+.canal-item { flex: 1; padding: 10px 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: background 0.15s; border-right: 1px solid var(--border); user-select: none; -webkit-tap-highlight-color: transparent; }
+.canal-item:last-child { border-right: none; }
+.canal-item:active { background: rgba(0,0,0,0.03); }
+.canal-label { font-size: 10px; font-weight: 500; color: var(--muted); text-align: center; line-height: 1.4; }
+.canal-check { width: 26px; height: 26px; border-radius: 50%; border: 2px solid rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center; transition: all 0.2s; background: transparent; }
+.canal-check.ativo { background: var(--success); border-color: var(--success); }
+.canal-check.ativo::after { content: '✓'; color: white; font-size: 13px; font-weight: 700; }
+
+.loading-state { text-align: center; padding: 50px 20px; color: var(--muted); }
+.loading-spinner { width: 32px; height: 32px; border: 3px solid rgba(0,113,227,0.2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 14px; }
+
+.empty-state { text-align: center; padding: 70px 30px; }
+.empty-icon { font-size: 52px; margin-bottom: 16px; display: block; animation: float 3s ease-in-out infinite; }
+@keyframes float { 0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);} }
+.empty-text { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.empty-sub { font-size: 14px; color: var(--muted); line-height: 1.6; }
 
 #view-lista { display: none; }
 #view-controle { display: none; }
@@ -659,15 +161,17 @@ textarea { resize: none; line-height: 1.6; }
     </svg>
   </div>
   <div class="header-center-title">Cadastro de Produtos</div>
-  <div style="width:140px"></div>
+  <div class="sync-indicator">
+    <span class="sync-dot" id="sync-dot"></span>
+    <span id="sync-label">...</span>
+  </div>
 </header>
 
 <div class="tabs-wrap">
   <div class="tabs">
     <button class="tab active" onclick="showTab('form')">Novo</button>
     <button class="tab" onclick="showTab('lista')">
-      Cadastrados
-      <span class="count-badge" id="count-badge">0</span>
+      Produtos<span class="count-badge" id="count-badge">0</span>
     </button>
     <button class="tab" onclick="showTab('controle')">Controle</button>
   </div>
@@ -676,7 +180,6 @@ textarea { resize: none; line-height: 1.6; }
 <!-- FORM -->
 <div id="view-form" class="section">
   <div class="form-card">
-
     <div class="photo-upload" id="photo-area" onclick="document.getElementById('file-input').click()">
       <div class="photo-icon-wrap"><div class="photo-icon">📷</div></div>
       <div class="photo-label">Adicionar Foto</div>
@@ -684,7 +187,6 @@ textarea { resize: none; line-height: 1.6; }
       <div class="overlay"><div class="overlay-text">Trocar foto</div></div>
     </div>
     <input type="file" id="file-input" accept="image/*" onchange="handlePhoto(this)">
-
     <div class="fields-wrap">
       <div class="field-group">
         <label class="field-label">Nome do Produto</label>
@@ -702,55 +204,74 @@ textarea { resize: none; line-height: 1.6; }
         <textarea id="detalhes" rows="3" placeholder="Características, tamanhos, cores..."></textarea>
       </div>
     </div>
-
     <div class="buttons-wrap">
-      <button class="btn-primary" id="btn-salvar" onclick="salvarProduto()">
-        Salvar Produto
-      </button>
+      <button class="btn-primary" id="btn-salvar" onclick="salvarProduto()">Salvar Produto</button>
       <button class="btn-secondary" onclick="limparForm()">Limpar</button>
     </div>
-
   </div>
 </div>
 
-<!-- LISTA -->
+<!-- PRODUTOS -->
 <div id="view-lista" class="section">
-  <div class="sheet-bar">
-    <div class="sheet-bar-left">
-      <span class="sheet-dot"></span>
-      <span class="sheet-name">Lista de Produtos – Lala e Ivan</span>
-    </div>
-    <div class="sheet-bar-right">
-      <a href="https://docs.google.com/spreadsheets/d/1Dw8iTWY2U_-Oi08vLZUYBJwA4nFf_cc_J3wajvAKw6E/edit" target="_blank">Abrir →</a>
-    </div>
+  <div class="produtos-list" id="produtos-list">
+    <div class="loading-state"><div class="loading-spinner"></div>Carregando...</div>
   </div>
-  <div class="produtos-list" id="produtos-list"></div>
 </div>
 
 <!-- CONTROLE -->
 <div id="view-controle" class="section">
-  <div class="controle-list" id="controle-list"></div>
+  <div class="controle-list" id="controle-list">
+    <div class="loading-state"><div class="loading-spinner"></div>Carregando...</div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCnAffXMT4SbK8xnv5MaXYOG4kt6S76-zO1yaRyVKUgN6HXCBEpdtWomVxT1E2lSp3/exec';
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-let produtos = JSON.parse(localStorage.getItem('produtos') || '[]');
+const firebaseConfig = {
+  apiKey: "AIzaSyDE7MsNhMp0odOirjeeq99nkONUdYvYSHo",
+  authDomain: "lala-e-ivan.firebaseapp.com",
+  projectId: "lala-e-ivan",
+  storageBucket: "lala-e-ivan.firebasestorage.app",
+  messagingSenderId: "256589510076",
+  appId: "1:256589510076:web:15ca1d365c35da2ac5a7b9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let produtos = [];
 let currentPhoto = null;
 let isSaving = false;
+let currentTab = 'form';
 
-window.onload = () => { updateCount(); };
+function setSyncStatus(status) {
+  const dot = document.getElementById('sync-dot');
+  const label = document.getElementById('sync-label');
+  dot.className = 'sync-dot ' + status;
+  label.textContent = status === 'online' ? 'Online' : status === 'syncing' ? 'Sincronizando' : 'Offline';
+}
 
-function handlePhoto(input) {
+const q = query(collection(db, 'produtos'), orderBy('criadoEm', 'desc'));
+onSnapshot(q, (snapshot) => {
+  produtos = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+  document.getElementById('count-badge').textContent = produtos.length;
+  setSyncStatus('online');
+  if (currentTab === 'lista') renderLista();
+  if (currentTab === 'controle') renderControle();
+}, () => { setSyncStatus('offline'); });
+
+window.handlePhoto = function(input) {
   const file = input.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
     const img = new Image();
     img.onload = () => {
-      const MAX = 800;
+      const MAX = 600;
       let w = img.width, h = img.height;
       if (w > MAX || h > MAX) {
         if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
@@ -759,7 +280,7 @@ function handlePhoto(input) {
       const canvas = document.createElement('canvas');
       canvas.width = w; canvas.height = h;
       canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      currentPhoto = canvas.toDataURL('image/jpeg', 0.7);
+      currentPhoto = canvas.toDataURL('image/jpeg', 0.65);
       const area = document.getElementById('photo-area');
       area.innerHTML = `<img src="${currentPhoto}" alt="foto"><div class="overlay"><div class="overlay-text">Trocar foto</div></div>`;
       area.onclick = () => document.getElementById('file-input').click();
@@ -767,216 +288,76 @@ function handlePhoto(input) {
     img.src = e.target.result;
   };
   reader.readAsDataURL(file);
-}
+};
 
-async function salvarProduto() {
+window.salvarProduto = async function() {
   if (isSaving) return;
   const nome = document.getElementById('nome').value.trim();
   const preco = document.getElementById('preco').value;
   const detalhes = document.getElementById('detalhes').value.trim();
   if (!nome) { showToast('Preencha o nome do produto', true); return; }
-
   isSaving = true;
   const btn = document.getElementById('btn-salvar');
   btn.innerHTML = '<span class="spinner"></span>';
   btn.disabled = true;
-
-  const produto = {
-    id: Date.now(),
-    nome,
-    preco: preco ? parseFloat(preco).toFixed(2) : '',
-    detalhes,
-    foto: currentPhoto || null,
-    data: new Date().toLocaleDateString('pt-BR')
-  };
-
+  setSyncStatus('syncing');
   try {
-    await enviarParaSheets(produto);
-    produtos.push(produto);
-    localStorage.setItem('produtos', JSON.stringify(produtos));
-    updateCount();
-    showToast('Produto salvo com sucesso ✓');
+    await addDoc(collection(db, 'produtos'), {
+      nome,
+      preco: preco ? parseFloat(preco).toFixed(2) : '',
+      detalhes,
+      foto: currentPhoto || '',
+      criadoEm: Date.now(),
+      data: new Date().toLocaleDateString('pt-BR'),
+      publicacao: { ml: false, shopee: false, social: false }
+    });
+    showToast('Produto salvo ✓');
     limparForm();
   } catch(e) {
     showToast('Erro ao salvar', true);
+    setSyncStatus('offline');
   } finally {
     isSaving = false;
     btn.innerHTML = 'Salvar Produto';
     btn.disabled = false;
   }
-}
+};
 
-async function enviarParaSheets(produto) {
-  const payload = { nome: produto.nome, preco: produto.preco, detalhes: produto.detalhes, data: produto.data, foto: produto.foto || '' };
-  const form = document.createElement('form');
-  form.method = 'POST'; form.action = SCRIPT_URL; form.target = '_iframe_sink';
-  const input = document.createElement('input');
-  input.type = 'hidden'; input.name = 'payload'; input.value = JSON.stringify(payload);
-  form.appendChild(input); document.body.appendChild(form);
-  return new Promise(resolve => {
-    let iframe = document.getElementById('_iframe_sink');
-    if (!iframe) {
-      iframe = document.createElement('iframe');
-      iframe.name = '_iframe_sink'; iframe.id = '_iframe_sink';
-      iframe.style.display = 'none'; document.body.appendChild(iframe);
-    }
-    const timeout = setTimeout(resolve, 4000);
-    iframe.onload = () => { clearTimeout(timeout); resolve(); };
-    form.submit(); document.body.removeChild(form);
-  });
-}
-
-function limparForm() {
+window.limparForm = function() {
   document.getElementById('nome').value = '';
   document.getElementById('preco').value = '';
   document.getElementById('detalhes').value = '';
   document.getElementById('file-input').value = '';
   currentPhoto = null;
   const area = document.getElementById('photo-area');
-  area.innerHTML = `
-    <div class="photo-icon-wrap"><div class="photo-icon">📷</div></div>
-    <div class="photo-label">Adicionar Foto</div>
-    <div class="photo-sublabel">Toque para abrir a galeria</div>
-    <div class="overlay"><div class="overlay-text">Trocar foto</div></div>`;
+  area.innerHTML = `<div class="photo-icon-wrap"><div class="photo-icon">📷</div></div><div class="photo-label">Adicionar Foto</div><div class="photo-sublabel">Toque para abrir a galeria</div><div class="overlay"><div class="overlay-text">Trocar foto</div></div>`;
   area.onclick = () => document.getElementById('file-input').click();
-}
+};
 
-function deletarProduto(id) {
-  produtos = produtos.filter(p => p.id !== id);
-  localStorage.setItem('produtos', JSON.stringify(produtos));
-  updateCount(); renderLista();
-  showToast('Produto removido');
-}
-
-async function carregarDoServidor() {
-  const resp = await fetch(SCRIPT_URL + '?action=list');
-  if (!resp.ok) throw new Error('HTTP ' + resp.status);
-  const json = await resp.json();
-  if (json.status !== 'ok') throw new Error(json.message || 'Erro');
-  return json.produtos;
-}
-
-function renderLoading(listId, icon) {
-  document.getElementById(listId).innerHTML = `
-    <div class="empty-state">
-      <span class="empty-icon" style="animation:none">${icon}</span>
-      <div class="empty-sub" style="margin-top:8px">Carregando...</div>
-    </div>`;
-}
-
-function renderLista(arr) {
-  const list = document.getElementById('produtos-list');
-  const data = arr || [];
-  if (data.length === 0) {
-    list.innerHTML = `
-      <div class="empty-state">
-        <span class="empty-icon">📦</span>
-        <div class="empty-text">Nenhum produto ainda</div>
-        <div class="empty-sub">Cadastre seu primeiro produto<br>na aba ao lado</div>
-      </div>`;
-    return;
+window.deletarProduto = async function(id) {
+  try {
+    await deleteDoc(doc(db, 'produtos', id));
+    showToast('Produto removido');
+  } catch(e) {
+    showToast('Erro ao remover', true);
   }
-  list.innerHTML = '';
-  [...data].reverse().forEach((p, i) => {
-    const num = data.length - i;
-    const card = document.createElement('div');
-    card.className = 'produto-card';
-    card.style.animationDelay = (i * 0.04) + 's';
-    card.innerHTML = `
-      <div class="produto-foto">${p.foto ? `<img src="${p.foto}" alt="">` : '📦'}</div>
-      <div class="produto-info">
-        <div class="produto-num">Produto ${num}</div>
-        <div class="produto-nome">${esc(p.nome)}</div>
-        ${p.preco ? `<div class="produto-preco">R$ ${p.preco}</div>` : ''}
-        ${p.detalhes ? `<div class="produto-detalhe">${esc(p.detalhes)}</div>` : ''}
-      </div>`;
-    list.appendChild(card);
-  });
-}
+};
 
-function renderControle(arr) {
-  const list = document.getElementById('controle-list');
-  const data = arr || [];
-  if (data.length === 0) {
-    list.innerHTML = `
-      <div class="empty-state">
-        <span class="empty-icon">📋</span>
-        <div class="empty-text">Nenhum produto ainda</div>
-        <div class="empty-sub">Cadastre produtos na aba Novo<br>para copiar os dados aqui</div>
-      </div>`;
-    return;
+window.toggleCanal = async function(id, canal) {
+  const produto = produtos.find(p => p.id === id);
+  if (!produto) return;
+  const pub = produto.publicacao || { ml: false, shopee: false, social: false };
+  pub[canal] = !pub[canal];
+  try {
+    await updateDoc(doc(db, 'produtos', id), { publicacao: pub });
+    const label = canal === 'ml' ? 'Mercado Livre' : canal === 'shopee' ? 'Shopee' : 'Rede Social';
+    showToast(label + (pub[canal] ? ' publicado ✓' : ' desmarcado'));
+  } catch(e) {
+    showToast('Erro ao atualizar', true);
   }
-  list.innerHTML = '';
-  [...data].reverse().forEach((p, i) => {
-    const num = data.length - i;
-    const card = document.createElement('div');
-    card.className = 'controle-card';
-    card.style.animationDelay = (i * 0.04) + 's';
+};
 
-    const fields = [
-      { label: 'Nome',     value: p.nome,                         cls: '' },
-      { label: 'Preço',    value: p.preco ? 'R$ ' + p.preco : '', cls: 'preco' },
-      { label: 'Detalhes', value: p.detalhes,                     cls: '' },
-      { label: 'Data',     value: p.data,                         cls: '' },
-    ].filter(f => f.value);
-
-    const fieldsHtml = fields.map(f => {
-      const raw = f.label === 'Preço' ? (p.preco || '') : f.value;
-      return `
-        <div class="controle-field">
-          <span class="controle-field-label">${f.label}</span>
-          <span class="controle-field-value ${f.cls}">${esc(f.value)}</span>
-          <button class="btn-copy" data-val="${esc(raw)}" onclick="copiarCampo(this)">Copiar</button>
-        </div>`;
-    }).join('');
-
-    card.innerHTML = `
-      <div class="controle-card-header">
-        <div class="controle-card-top">
-          <span class="controle-card-title">Produto ${num} — ${esc(p.nome)}</span>
-          <span class="controle-card-date">${p.data}</span>
-        </div>
-        <div class="controle-card-pills">
-          <button class="status-pill ${p.ml ? 'done' : ''}" data-row="${p.id}" data-key="ml" onclick="toggleStatus(this)">${p.ml ? '✓ ' : ''}ML</button>
-          <button class="status-pill ${p.shopee ? 'done' : ''}" data-row="${p.id}" data-key="shopee" onclick="toggleStatus(this)">${p.shopee ? '✓ ' : ''}Shopee</button>
-          <button class="status-pill ${p.social ? 'done' : ''}" data-row="${p.id}" data-key="social" onclick="toggleStatus(this)">${p.social ? '✓ ' : ''}Social</button>
-        </div>
-      </div>
-      ${fieldsHtml}`;
-    list.appendChild(card);
-  });
-}
-
-function toggleStatus(btn) {
-  const isDone = btn.classList.toggle('done');
-  btn.textContent = (isDone ? '✓ ' : '') + btn.dataset.key.charAt(0).toUpperCase() + btn.dataset.key.slice(1);
-  if (btn.dataset.key === 'ml') btn.textContent = (isDone ? '✓ ' : '') + 'ML';
-
-  const pills = btn.closest('.controle-card-pills').querySelectorAll('.status-pill');
-  const row = parseInt(btn.dataset.row);
-  const states = {};
-  pills.forEach(p => { states[p.dataset.key] = p.classList.contains('done'); });
-  salvarStatus(row, states);
-}
-
-function salvarStatus(row, states) {
-  const payload = JSON.stringify({ action: 'update_status', row, ml: states.ml, shopee: states.shopee, social: states.social });
-  const form = document.createElement('form');
-  form.method = 'POST'; form.action = SCRIPT_URL; form.target = '_iframe_sink';
-  const input = document.createElement('input');
-  input.type = 'hidden'; input.name = 'payload'; input.value = payload;
-  form.appendChild(input); document.body.appendChild(form);
-  let iframe = document.getElementById('_iframe_sink');
-  if (!iframe) {
-    iframe = document.createElement('iframe');
-    iframe.name = '_iframe_sink'; iframe.id = '_iframe_sink';
-    iframe.style.display = 'none'; document.body.appendChild(iframe);
-  }
-  form.submit(); document.body.removeChild(form);
-}
-
-function copiarCampo(btn) {
-  const valor = btn.getAttribute('data-val');
+window.copiarCampo = function(btn, valor) {
   const done = () => {
     btn.textContent = '✓ Copiado';
     btn.classList.add('copied');
@@ -987,7 +368,7 @@ function copiarCampo(btn) {
   } else {
     fallbackCopy(valor, done);
   }
-}
+};
 
 function fallbackCopy(valor, cb) {
   const ta = document.createElement('textarea');
@@ -1000,49 +381,114 @@ function fallbackCopy(valor, cb) {
   cb();
 }
 
-async function showTab(tab) {
+function renderLista() {
+  const list = document.getElementById('produtos-list');
+  if (produtos.length === 0) {
+    list.innerHTML = `<div class="empty-state"><span class="empty-icon">📦</span><div class="empty-text">Nenhum produto ainda</div><div class="empty-sub">Cadastre seu primeiro produto<br>na aba Novo</div></div>`;
+    return;
+  }
+  list.innerHTML = '';
+  produtos.forEach((p, i) => {
+    const num = produtos.length - i;
+    const card = document.createElement('div');
+    card.className = 'produto-card';
+    card.style.animationDelay = (i * 0.04) + 's';
+    card.innerHTML = `
+      <div class="produto-foto">${p.foto ? `<img src="${p.foto}" alt="">` : '📦'}</div>
+      <div class="produto-info">
+        <div class="produto-num">Produto ${num}</div>
+        <div class="produto-nome">${esc(p.nome)}</div>
+        ${p.preco ? `<div class="produto-preco">R$ ${p.preco}</div>` : ''}
+        ${p.detalhes ? `<div class="produto-detalhe">${esc(p.detalhes)}</div>` : ''}
+      </div>
+      <div class="produto-actions"><button class="btn-delete" onclick="deletarProduto('${p.id}')">✕</button></div>`;
+    list.appendChild(card);
+  });
+}
+
+function renderControle() {
+  const list = document.getElementById('controle-list');
+  if (produtos.length === 0) {
+    list.innerHTML = `<div class="empty-state"><span class="empty-icon">📋</span><div class="empty-text">Nenhum produto ainda</div><div class="empty-sub">Cadastre produtos na aba Novo</div></div>`;
+    return;
+  }
+  list.innerHTML = '';
+  produtos.forEach((p, i) => {
+    const pub = p.publicacao || { ml: false, shopee: false, social: false };
+    const card = document.createElement('div');
+    card.className = 'controle-card';
+    card.style.animationDelay = (i * 0.04) + 's';
+
+    const fields = [
+      { label: 'Nome',     value: p.nome,                         cls: '' },
+      { label: 'Preço',    value: p.preco ? 'R$ ' + p.preco : '', cls: 'preco', raw: p.preco || '' },
+      { label: 'Detalhes', value: p.detalhes,                     cls: '' },
+      { label: 'Data',     value: p.data,                         cls: '' },
+    ].filter(f => f.value);
+
+    const fieldsHtml = fields.map(f => {
+      const raw = (f.raw !== undefined ? f.raw : f.value).replace(/"/g, '&quot;');
+      return `<div class="controle-field">
+        <span class="controle-field-label">${f.label}</span>
+        <span class="controle-field-value ${f.cls}">${esc(f.value)}</span>
+        <button class="btn-copy" onclick="copiarCampo(this, &quot;${raw}&quot;)">Copiar</button>
+      </div>`;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="controle-top">
+        <div class="controle-foto">${p.foto ? `<img src="${p.foto}" alt="">` : '📦'}</div>
+        <div class="controle-nome">${esc(p.nome)}</div>
+        ${p.preco ? `<div class="controle-preco">R$ ${p.preco}</div>` : ''}
+      </div>
+      <div class="controle-fields">${fieldsHtml}</div>
+      <div class="controle-canais">
+        <div class="canal-item" onclick="toggleCanal('${p.id}', 'ml')">
+          <div class="canal-check ${pub.ml ? 'ativo' : ''}"></div>
+          <div class="canal-label">Mercado<br>Livre</div>
+        </div>
+        <div class="canal-item" onclick="toggleCanal('${p.id}', 'shopee')">
+          <div class="canal-check ${pub.shopee ? 'ativo' : ''}"></div>
+          <div class="canal-label">Shopee</div>
+        </div>
+        <div class="canal-item" onclick="toggleCanal('${p.id}', 'social')">
+          <div class="canal-check ${pub.social ? 'ativo' : ''}"></div>
+          <div class="canal-label">Rede<br>Social</div>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+window.showTab = function(tab) {
+  currentTab = tab;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('view-form').style.display = 'none';
   document.getElementById('view-lista').style.display = 'none';
   document.getElementById('view-controle').style.display = 'none';
-
   if (tab === 'form') {
     document.getElementById('view-form').style.display = 'block';
     document.querySelectorAll('.tab')[0].classList.add('active');
   } else if (tab === 'lista') {
     document.getElementById('view-lista').style.display = 'block';
     document.querySelectorAll('.tab')[1].classList.add('active');
-    renderLoading('produtos-list', '📦');
-    try {
-      const remote = await carregarDoServidor();
-      renderLista(remote);
-    } catch(e) {
-      renderLista(produtos);
-      showToast('Sem conexão — dados locais', true);
-    }
+    renderLista();
   } else {
     document.getElementById('view-controle').style.display = 'block';
     document.querySelectorAll('.tab')[2].classList.add('active');
-    renderLoading('controle-list', '📋');
-    try {
-      const remote = await carregarDoServidor();
-      renderControle(remote);
-    } catch(e) {
-      renderControle(produtos);
-      showToast('Sem conexão — dados locais', true);
-    }
+    renderControle();
   }
-}
+};
 
-function updateCount() { document.getElementById('count-badge').textContent = produtos.length; }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function showToast(msg, isError = false) {
+
+window.showToast = function(msg, isError = false) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.className = 'toast' + (isError ? ' error' : '');
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
+  setTimeout(() => t.classList.remove('show'), 2500);
+};
 </script>
 </body>
 </html>
